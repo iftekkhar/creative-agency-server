@@ -41,33 +41,33 @@ client.connect(err => {
         const title = req.body.title;
         const description = req.body.description;
         const price = req.body.price;
-        const filePath = `${__dirname}/images/${image.name}`;
+        // const filePath = `${__dirname}/images/${image.name}`;
         console.log(image, title, description, price);
-        image.mv(filePath, err => {
-            if (err) {
-                console.log(err);
-                res.status(500).send({ msg: 'Failed to Upload' })
-            }
-        })
-        const newImg = image.data;
+        // image.mv(filePath, err => {
+        //     if (err) {
+        //         console.log(err);
+        //         res.status(500).send({ msg: 'Failed to Upload' })
+        //     }
+        // })
+        const newImg = req.files.image.data;
         const encImg = newImg.toString('base64');
         // console.log('encImg', encImg)
         const dbImage = {
             contentType: req.files.image.mimetype,
             size: req.files.image.size,
-            img: Buffer(encImg, 'base64')
+            img: Buffer.from(encImg, 'base64')
 
         };
 
         services.insertOne({ title, description, price, dbImage })
             .then(result => {
-                fs.remove(filePath, error => {
-                    if (error) {
-                        res.status(500).send({ msg: 'Failed to Upload' })
-                        console.log(error)
-                    }
+                // fs.remove(filePath, error => {
+                //     if (error) {
+                //         res.status(500).send({ msg: 'Failed to Upload' })
+                //         console.log(error)
+                //     }
 
-                })
+                // })
                 res.send(result.insertedCount > 0);
 
 
